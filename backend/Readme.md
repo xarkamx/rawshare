@@ -16,7 +16,7 @@ npm install
 ```
 
 Crea una carpeta llamada `image/jpg` .
-dentro de image anexa tu imagen cr2
+dentro de ``image`` anexa tu imagen cr2
 
 Dentro del folder `assets/storage` crea un archivo llamado `keys.json`
 con el siguiente contenido:
