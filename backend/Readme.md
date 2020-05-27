@@ -32,6 +32,8 @@ con el siguiente contenido:
 
 ```
 
-y finalmente en consola corre el comando: `tsc-watch onSuccess "node build/main.js"`
+y finalmente en consola corre el comando: `tsc-watch --onSuccess "node build/main.js"`
 
-Asegurate que la carpeta `build` no tenga otra carpeta `build` dentro
+Asegurate que la carpeta `build` no tenga otra carpeta `build` dentro.
+
+Recuerda hacer `npm update` cada que bajes una actualizacion.
