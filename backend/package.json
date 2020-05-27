@@ -1,0 +1,27 @@
+{
+  "name": "expresstest",
+  "version": "1.0.0",
+  "description": "recopilado de expressTest",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "tsc && node build/main.js"
+  },
+  "author": "Alberto <programacion@web-gdl.com>",
+  "license": "MIT",
+  "dependencies": {
+    "@types/inquirer": "0.0.43",
+    "cr2-raw": "^1.1.0",
+    "inquirer": "^6.2.1",
+    "mocha": "^5.2.0",
+    "node-fetch": "^2.6.0"
+  },
+  "devDependencies": {
+    "@types/node": "^10.17.21",
+    "tsc-watch": "^4.2.8",
+    "typescript": "^3.8.3"
+  },
+  "keywords": [
+    "local"
+  ]
+}
