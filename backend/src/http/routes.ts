@@ -1,12 +1,13 @@
 import express from "express";
-import { Model } from "./../utils/Model";
+import { Demo } from "./../models/DemoModel";
 
 export class Routes {
   constructor() {
     let app = express();
     app.get("/", (req: any, res: any) => {
-      res.send(["hello world"]);
-      new Model().get();
+      new Demo().get().then((data) => {
+        res.send(data);
+      });
     });
     app.listen(3000, function () {
       console.log("Example app listening on port 3000!");

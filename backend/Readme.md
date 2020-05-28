@@ -16,7 +16,7 @@ npm install
 ```
 
 Crea una carpeta llamada `image/jpg` .
-dentro de ``image`` anexa tu imagen cr2
+dentro de `image` anexa tu imagen cr2
 
 Dentro del folder `assets/storage` crea un archivo llamado `keys.json`
 con el siguiente contenido:
@@ -31,6 +31,8 @@ con el siguiente contenido:
 }
 
 ```
+
+No se te olvide configurar los accesos de tu base de datos en el archivo `.env`
 
 y finalmente en consola corre el comando: `tsc-watch --onSuccess "node build/main.js"`
 
