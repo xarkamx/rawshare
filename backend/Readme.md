@@ -82,19 +82,30 @@ Cada instancia de la clase modelo tendra las siguientes metodos:
 
 Ejemplos de uso:
 
+Elimina el elemento con el id 105
+
 ```
-//Elimina el elemento con el id 105
 new Demo().where({ id: 105 }).delete();
-// obtiene todos los elementos en la base de datos basados en las columnas asignadas al crear el modelo
+
+```
+
+Obtiene todos los elementos en la base de datos basados en las columnas asignadas al crear el modelo
+
+```
 new Demo().get().then((data) => {
         res.send(data);
       });
-// Asigna y actualiza los valores donde `content` sea igual a 10
+```
+
+Asigna y actualiza los valores donde `content` sea igual a 10 u 11
+
+```
 new Demo()
-  .where({ content: 10 })
+  .where({ content: 10 }) // donde content = 10
+  .orWhere({content:11}) // u 11
   .setValues({
     content: 15,
     content2: "juanito",
-  })
-  .save();
+  }) // define valores a guardar
+  .save(); // y guarda
 ```
