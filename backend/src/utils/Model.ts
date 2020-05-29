@@ -15,10 +15,11 @@ connection.connect(function (err: any) {
 export class Model {
   columns: Array<string> = [];
   tableName: string = "";
-  type: string = "insert";
   query: string = "";
-  whereQuery: Array<string> = [];
+  whereQuery: Array<object> = [];
+  values: any = {};
   selectedColumns: string = "*";
+
   /**
    * Setea las columnas a obtener
    * @param columns
@@ -28,8 +29,41 @@ export class Model {
     this.selectedColumns = columns.length == 0 ? "*" : columns.join(",");
     return this;
   }
-  where(args: Array<object>) {}
-  orWhere(args: Array<object>) {}
+  /**
+   * Prepara el objeto para una consulta where
+   * @param args string || {key{val,operator}}
+   */
+  where(args: any) {
+    let queryArr = this.queryGenerator(args);
+    this.whereQuery.push({ and: queryArr.join(" and ") });
+    return this;
+  }
+
+  /**
+   * Prepara el objeto para una consulta where or
+   * @param args string || {key{val,operator}}
+   */
+  orWhere(args: any) {
+    let queryArr = this.queryGenerator(args);
+    this.whereQuery.push({ or: queryArr.join(" or ") });
+    return this;
+  }
+
+  private queryGenerator(args: any) {
+    let queryArr = [];
+    let operator = "=";
+    for (let index in args) {
+      let item = args[index];
+      if (typeof item == "object") {
+        operator = item.operator || "=";
+        item = item.val;
+      }
+      let query = `${this.tableName}.${index} ${operator} "${item}"`;
+      queryArr.push(query);
+    }
+    return queryArr;
+  }
+
   /**
    * Ejecuta la query generada hasta el momento
    * @returns Promise;
@@ -38,12 +72,47 @@ export class Model {
     if (this.selectedColumns == "*") {
       this.select(this.columns);
     }
+    let where = this.__formatWhereQuery();
     return this.runQuery(
-      `select ${this.selectedColumns} from ${this.tableName}`
+      `select ${this.selectedColumns} from ${this.tableName} ${where}`
     );
   }
+
+  /**
+   *
+   * Elimina elementos seleccionados mediante el metodo where.
+   * @returns Promise;
+   */
+  delete(): Promise<any> {
+    let where = this.__formatWhereQuery();
+    if (where == "") {
+      throw "No te olvides de poner el where";
+    }
+    return this.runQuery(`delete  from ${this.tableName} ${where}`);
+  }
+
+  /**
+   * Formatea las querys de busqueda.
+   * @returns string
+   */
+  __formatWhereQuery(): string {
+    let querys = this.whereQuery;
+    if (querys.length == 0) {
+      return "";
+    }
+    let query = "where " + Object.values(this.whereQuery[0])[0];
+
+    querys.splice(0, 1);
+    for (let item of querys) {
+      let type = Object.keys(item)[0];
+      let values = Object.values(item)[0];
+      console.log(values);
+      query += ` ${type} ${values}`;
+    }
+    return query;
+  }
+
   getColumns() {}
-  getTables() {}
   runQuery($query: string) {
     console.log($query);
     return new Promise((load, fail) => {
@@ -53,8 +122,48 @@ export class Model {
       });
     });
   }
+  setValues(values: object) {
+    this.values = values;
+    return this;
+  }
+  /**
+   * Guarda o actualiza la informacion definida en values en la base de datos
+   * @return Model
+   */
   save() {
-    if (this.type == "insert") {
+    let query = "";
+    let querys = this.whereQuery;
+    let type = "insert";
+    if (querys.length > 0) {
+      type = "update";
     }
+    switch (type) {
+      case "insert":
+        query = this._setInsertQuery();
+        break;
+      case "update":
+        query = this._setUpdateQuery();
+        break;
+    }
+    this.runQuery(query);
+    return this;
+  }
+  private _setInsertQuery(): string {
+    let columns = Object.keys(this.values).join(",");
+    let values = Object.values(this.values).join("','");
+    let query = `insert into ${this.tableName} (${columns}) values ('${values}')`;
+    return query;
+  }
+  private _setUpdateQuery() {
+    let querys = [];
+    for (let index in this.values) {
+      let item = this.values[index];
+      querys.push(`${index}='${item}'`);
+    }
+    return (
+      `update ${this.tableName} set ` +
+      querys.join(",") +
+      this.__formatWhereQuery()
+    );
   }
 }
