@@ -1,0 +1,38 @@
+{
+  "table1": {
+    "id": {
+      "type": "int",
+      "autoincrement": true,
+      "defaultValue": false,
+      "collation": "utf-8",
+      "nullable": false,
+      "index": "Primary key"
+    },
+    "content": {
+      "type": "longtext",
+      "autoincrement": false,
+      "length": "5000",
+      "defaultValue": "Demo",
+      "collation": "utf-8",
+      "nullable": true
+    }
+  },
+  "table2": {
+    "id": {
+      "type": "int",
+      "autoincrement": true,
+      "defaultValue": false,
+      "collation": "utf-8",
+      "nullable": false,
+      "index": "Primary key"
+    },
+    "content": {
+      "type": "longtext",
+      "autoincrement": false,
+      "length": "5000",
+      "defaultValue": "Demo",
+      "collation": "utf-8",
+      "nullable": true
+    }
+  }
+}

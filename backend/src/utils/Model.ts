@@ -114,7 +114,6 @@ export class Model {
 
   getColumns() {}
   runQuery($query: string) {
-    console.log($query);
     return new Promise((load, fail) => {
       connection.query($query, function (err: any, result: any) {
         if (err) fail(err);
