@@ -5,6 +5,7 @@ requisitos:
 1. Typescript
 1. node.js >=14.1
 1. tsc-watch
+1. yarn
 
 ### Backend
 
@@ -109,3 +110,32 @@ new Demo()
   }) // define valores a guardar
   .save(); // y guarda
 ```
+
+## Migraciones
+
+Permite la ejecucion de migraciones al editar en el path `\backend\src\migrations\db.json`
+
+```
+{
+  "table1": {
+    "column": {
+      "type": "int",
+      "autoincrement": true,
+      "length": "255",
+      "defaultValue": "",
+      "collation": "utf-8",
+      "nullable": false
+    },
+    "column2": {}
+  },
+  "table2": {
+    "column": {}
+  }
+}
+```
+
+Donde el script detecta las diferencias y actualiza las tablas.
+
+al eliminar una tabla en la migracion se eliminara en la db, lo mismo con las columnas.
+
+para ejecutar la migracion el comando debe ser `yarn migrate`

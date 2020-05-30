@@ -114,13 +114,13 @@ export class Helpers {
     });
   }
   fileToImage(file, dom) {
-    return this.fileTo64(file).then(ev => {
+    return this.fileTo64(file).then((ev) => {
       let img = document.createElement("img");
       img.src = ev.target.result;
       return new Promise((load, reject) => {
         let data = {
           img,
-          file
+          file,
         };
         load(data);
       });
@@ -307,7 +307,7 @@ export class Helpers {
     return {
       days: Math.floor(days),
       hours: Math.floor(hours),
-      mins: Math.floor(mins)
+      mins: Math.floor(mins),
     };
   }
   /**
@@ -347,7 +347,7 @@ export class Helpers {
     let result;
 
     array1.forEach((e1, i) =>
-      array2.forEach(e2 => {
+      array2.forEach((e2) => {
         let item1 = e1;
         if (key) {
           item1 = e1[key];
@@ -367,7 +367,7 @@ export class Helpers {
   }
   keylogger(callback) {
     let search = "";
-    let searcher = el => {
+    let searcher = (el) => {
       search = el.key;
       if (typeof search === "undefined") {
         return "";
@@ -378,7 +378,7 @@ export class Helpers {
     document.body.addEventListener("keydown", searcher);
     return {
       killItWithFire: () =>
-        document.body.removeEventListener("keydown", searcher)
+        document.body.removeEventListener("keydown", searcher),
     };
   }
 }
@@ -392,7 +392,7 @@ export function optionalFn(callback) {
 export function numberToMoney(number) {
   const formatter = new Intl.NumberFormat("en-US", {
     style: "currency",
-    currency: "MXN"
+    currency: "MXN",
   });
   number = Math.abs(number);
   return formatter.format(number);
@@ -410,7 +410,7 @@ export function localeDate(dateString = null) {
   return date.toLocaleDateString("es-MX", {
     year: "numeric",
     month: "long",
-    day: "numeric"
+    day: "numeric",
   });
 }
 /**
@@ -461,4 +461,8 @@ export function numberPadStart(places, number) {
  */
 export function currentVersion() {
   return Math.round(new Date(document.lastModified).getTime() / 1000);
+}
+export function getDiference(arr1, arr2) {
+  let b = new Set(Object.keys(arr1));
+  return [...arr2].filter((x) => !b.has(x));
 }

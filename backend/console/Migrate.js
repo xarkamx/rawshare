@@ -9,10 +9,27 @@ var connection = mysql.createConnection({
 });
 
 migrate(migration);
+
+/**
+ * Crea una nueva tabla con los parametros proporcionados
+ * @param string tableName 
+ * @param {"type",
+      "autoincrement",
+      "length",
+      "defaultValue",
+      "collation",
+      "nullable"} columns 
+ */
 function createTable(tableName, columns) {
   let tableColumns = formatColumns(columns);
   let query = `CREATE TABLE ${tableName} (${tableColumns}) ENGINE = MyISAM;`;
+  runQuery(query);
 }
+
+/**
+ * Formatea las columnas de un objeto a una cadena compatible con mysql
+ * @param {*} columns
+ */
 function formatColumns(columns) {
   let columnsQuery = [];
   let DBIndex = [];
@@ -32,36 +49,107 @@ function formatColumns(columns) {
     columnsQuery.push(`${name} ${type}  ${
       nullable ? "NULL" : "NOT NULL"
     } ${defaultValue} ${autoincrement ? "AUTO_INCREMENT" : ""}
-    `);
+      `);
     if (index) {
       DBIndex.push(`${index} (${name})`);
     }
   }
   return [...columnsQuery, ...DBIndex].join(" , ");
 }
+
+/**
+ * Ejecuta por medio de un json la migracion para la estructura de la tabla
+ * @param {*} migrations
+ */
 async function migrate(migrations) {
   let tables = await getTables();
+
+  dropDeletedTables(migrations, tables);
   for (let index in migrations) {
     let migration = migrations[index];
     let found = tables.find((table) => table == index);
     if (!found) {
       createTable(index, migration);
     } else {
-      // update table query
+      updateTable(index, migration);
     }
   }
-  var b = new Set(Object.keys(migrations));
-  let difference = [...tables].filter((x) => !b.has(x));
-  // delete diferences query
+}
+
+/**
+ * Actualiza la tabla eliminando o creando columnas
+ * @param string table
+ * @param {*} migration
+ */
+async function updateTable(table, migration) {
+  let columnsData = await runQuery(`describe ${table}`);
+  let columnsNames = columnsData.map((item) => item.Field);
+  modifyColumn(table, migration);
+  getDiference(Object.keys(migration), columnsNames).map((column) => {
+    dropColumn(table, column);
+  });
+  getDiference(columnsNames, Object.keys(migration)).map((column) =>
+    addColumn(table, column, migration[column])
+  );
+}
+
+/**
+ * Elimina las tablas que ya no tienen su respectiva migracion
+ * @param {*} migrations
+ * @param [*] tables
+ */
+function dropDeletedTables(migrations, tables) {
+  let difference = getDiference(Object.keys(migrations), tables);
+  for (let table of difference) {
+    runQuery(`drop table ${table}`);
+  }
+}
+/**
+ * Crea una nueva columna
+ * @param string table
+ * @param string column
+ * @param {*} migration
+ */
+function addColumn(table, column, columnData) {
+  return runQuery(`ALTER TABLE ${table}
+    ADD ${column} ${columnData.type};`);
+}
+/**
+ * Elimina una columna
+ * @param string table
+ * @param string column
+ */
+function dropColumn(table, column) {
+  return runQuery(`ALTER TABLE ${table}
+    DROP COLUMN ${column};`);
 }
 async function getTables() {
   return (await runQuery("show tables")).map((item) => Object.values(item)[0]);
 }
-function runQuery($query) {
+function runQuery(query) {
+  console.log(query);
   return new Promise((load, fail) => {
-    connection.query($query, function (err, result) {
+    connection.query(query, function (err, result) {
       if (err) fail(err);
       load(result);
     });
   });
+}
+function getDiference(arr1, arr2) {
+  let b = new Set(arr1);
+  return [...arr2].filter((x) => {
+    return !b.has(x);
+  });
+}
+function modifyColumn(table, columnData) {
+  let querys = [];
+  for (let key in columnData) {
+    let { type, nullable, defaultValue, autoincrement } = columnData[key];
+
+    defaultValue = defaultValue ? `DEFAULT '${defaultValue}' ` : "";
+    let values = ` ${type}  ${nullable ? "NULL" : "NOT NULL"} ${defaultValue} ${
+      autoincrement ? "AUTO_INCREMENT" : ""
+    }`;
+    runQuery(`ALTER TABLE ${table} MODIFY ${key} ${values}`);
+  }
 }
