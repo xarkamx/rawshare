@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "tsc && node build/main.js",
+    "start": "tsc-watch --onSuccess 'node build/main.js'",
     "migrate": "node console/Migrate.js"
   },
   "author": "Alberto <programacion@web-gdl.com>",

@@ -1,24 +1,35 @@
 import express from "express";
-import { Demo } from "./../models/DemoModel";
+import { DemoApiController } from "./../controller/DemoApiController";
+import { APIControllerInterface } from "./../utils/interfaces/APIControllerInterface";
 
 export class Routes {
+  app = express();
   constructor() {
-    let app = express();
-    app.get("/", (req: any, res: any) => {
-      new Demo().where({ id: 105 }).delete();
-      new Demo().get().then((data) => {
-        res.send(data);
-      });
-      new Demo()
-        .where({ content: 10 })
-        .setValues({
-          content: 15,
-          content2: "juanito",
-        })
-        .save();
-    });
-    app.listen(3000, function () {
+    this.app.get("/", (req: any, res: any) => {});
+    this.API("/demo", new DemoApiController());
+    this.runServer();
+  }
+  private runServer() {
+    this.app.listen(3000, function () {
       console.log("Example app listening on port 3000!");
+    });
+  }
+
+  API(path: string, apiController: APIControllerInterface) {
+    this.app.get(`${path}`, (req, res) => {
+      res.send(apiController.index(req, res));
+    });
+    this.app.get(`${path}/:id`, (req, res) => {
+      res.send(apiController.show(req, res));
+    });
+    this.app.post(`${path}`, (req, res) => {
+      res.send(apiController.store(req, res));
+    });
+    this.app.put(`${path}/:id`, (req, res) => {
+      res.send(apiController.update(req, res));
+    });
+    this.app.delete(`${path}/:id`, (req, res) => {
+      res.send(apiController.delete(req, res));
     });
   }
 }
