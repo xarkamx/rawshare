@@ -1,4 +1,4 @@
-import { APIControllerInterface } from "./../utils/interfaces/APIControllerInterface";
+import { APIControllerInterface } from "./interfaces/APIControllerInterface";
 export class DemoApiController implements APIControllerInterface {
   index(req: any, res: any): object {
     return ["hola"];

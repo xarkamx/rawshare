@@ -15,5 +15,37 @@
       "collation": "utf-8",
       "nullable": true
     }
+  },
+  "users": {
+    "id": {
+      "type": "int",
+      "autoincrement": true,
+      "defaultValue": false,
+      "collation": "utf-8",
+      "nullable": false,
+      "index": "Primary key"
+    },
+    "username": {
+      "type": "text",
+      "collation": "utf-8",
+      "nullable": false,
+      "unique": true
+    },
+    "email": {
+      "type": "text",
+      "collation": "utf-8",
+      "nullable": false,
+      "unique": true
+    },
+    "password": {
+      "type": "text",
+      "collation": "utf-8",
+      "nullable": false
+    },
+    "jwtToken": {
+      "type": "text",
+      "collation": "utf-8",
+      "nullable": true
+    }
   }
 }

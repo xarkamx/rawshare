@@ -41,6 +41,7 @@ function formatColumns(columns) {
       defaultValue,
       nullable,
       index,
+      unique,
     } = columns[name];
 
     defaultValue = defaultValue ? `DEFAULT '${defaultValue}' ` : "";
@@ -52,6 +53,9 @@ function formatColumns(columns) {
       `);
     if (index) {
       DBIndex.push(`${index} (${name})`);
+    }
+    if (unique) {
+      DBIndex.push(`${unique} (${name})`);
     }
   }
   return [...columnsQuery, ...DBIndex].join(" , ");
@@ -84,13 +88,14 @@ async function migrate(migrations) {
 async function updateTable(table, migration) {
   let columnsData = await runQuery(`describe ${table}`);
   let columnsNames = columnsData.map((item) => item.Field);
-  modifyColumn(table, migration);
   getDiference(Object.keys(migration), columnsNames).map((column) => {
     dropColumn(table, column);
   });
   getDiference(columnsNames, Object.keys(migration)).map((column) =>
     addColumn(table, column, migration[column])
   );
+
+  modifyColumn(table, migration);
 }
 
 /**
@@ -144,12 +149,16 @@ function getDiference(arr1, arr2) {
 function modifyColumn(table, columnData) {
   let querys = [];
   for (let key in columnData) {
-    let { type, nullable, defaultValue, autoincrement } = columnData[key];
-
+    let { type, nullable, defaultValue, autoincrement, unique } = columnData[
+      key
+    ];
     defaultValue = defaultValue ? `DEFAULT '${defaultValue}' ` : "";
     let values = ` ${type}  ${nullable ? "NULL" : "NOT NULL"} ${defaultValue} ${
       autoincrement ? "AUTO_INCREMENT" : ""
-    }`;
+    } `;
     runQuery(`ALTER TABLE ${table} MODIFY ${key} ${values}`);
+    if (unique) {
+      runQuery(`ALTER TABLE ${table} ADD UNIQUE (${key}) `);
+    }
   }
 }
