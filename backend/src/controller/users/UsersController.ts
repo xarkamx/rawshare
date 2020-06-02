@@ -5,7 +5,8 @@ import * as keys from "../../assets/storage/keys.json";
 let jwt = require("jsonwebtoken");
 export class UsersController implements APIControllerInterface {
   index(req: any, res: any): Promise<any> {
-    throw new Error("Method not implemented.");
+    console.log("run?");
+    return new UserModel().get();
   }
   show(req: any, res: any): Promise<any> {
     throw new Error("Method not implemented.");
@@ -30,10 +31,10 @@ export class UsersController implements APIControllerInterface {
       .where({ username: body.username })
       .orWhere({ email: body.email })
       .get();
-    let { password } = content[0];
+    let { username, password } = content[0];
     let token = jwt.sign(
       { check: compare(body.password, password) },
-      keys.jwtKey,
+      username,
       {
         expiresIn: 1440,
       }
