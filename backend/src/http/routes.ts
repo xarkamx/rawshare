@@ -54,21 +54,19 @@ export class Routes {
     if (isArray(middleWare)) {
       for (let method of middleWare) {
         let proceed = await method(req, res);
-        if (proceed == false) {
+        if (proceed === false) {
           break;
         }
       }
     } else {
       proceed = await middleWare(req, res);
     }
-    return proceed;
+    return proceed === true;
   }
   private async _sender({ req, res, middleWare, callback }: iSender) {
     let response = await this.__runMiddleware(middleWare, { req, res });
     if (response) {
       res.send(await callback(req, res));
-    } else {
-      res.send("");
     }
   }
 }
