@@ -9,7 +9,9 @@ export class Routes {
   app = express();
   constructor() {
     this.app.use(express.json());
-    this.app.get("/", (req: any, res: any) => {});
+    this.app.get("/", (req: any, res: any) => {
+      res.send("hola");
+    });
     this.app.post("/api/auth", async (req: any, res: any) => {
       res.send(await new UsersController().auth(req));
     });
