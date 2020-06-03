@@ -2,11 +2,16 @@ import { APIControllerInterface } from "../interfaces/APIControllerInterface";
 import { UserModel } from "./../../models/UserModel";
 import { encrypt, compare } from "./../../utils/Encriptor";
 import * as keys from "../../assets/storage/keys.json";
+import { isObjectEmpty } from "./../../core/helpers";
 let jwt = require("jsonwebtoken");
 export class UsersController implements APIControllerInterface {
   index(req: any, res: any): Promise<any> {
-    console.log("run?");
-    return new UserModel().get();
+    let body = req.query;
+    let model = new UserModel();
+    if (isObjectEmpty(body)) {
+      return model.get();
+    }
+    return model.where(body).get();
   }
   show(req: any, res: any): Promise<any> {
     throw new Error("Method not implemented.");

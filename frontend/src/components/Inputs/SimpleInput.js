@@ -1,7 +1,7 @@
-import React, { useState } from "react";
-import { optionalFn } from "../../Core/helpers";
-import { FontIcon } from "../Icons/FontIcon";
-import "./scss/inputs.scss";
+import React, { useState, useEffect } from "react"
+import { optionalFn } from "../../Core/helpers"
+import { FontIcon } from "../Icons/FontIcon"
+import "./scss/inputs.scss"
 /*eslint eqeqeq: 0*/
 export function SimpleInput({
   title,
@@ -10,10 +10,14 @@ export function SimpleInput({
   message,
   placeholder,
   errorMessage = "Invalid Field",
+  errorStatus = 0,
   children,
   ...rest
 }) {
-  const [error, setError] = useState(0);
+  const [error, setError] = useState(0)
+  useEffect(() => {
+    setError(errorStatus)
+  }, [errorStatus])
   return (
     <div className={`simpleInput ${error ? "error" : ""}`}>
       <label>
@@ -21,15 +25,15 @@ export function SimpleInput({
         <HelpInput message={message} />
       </label>
       <input
-        onBlur={(ev) => {
-          optionalFn(onBlur)(ev);
+        onBlur={ev => {
+          optionalFn(onBlur)(ev)
           if (ev.target.value == "") {
-            return "";
+            return ""
           }
           if (!ev.target.checkValidity()) {
-            setError(1);
+            setError(1)
           } else {
-            setError(0);
+            setError(0)
           }
         }}
         required={required}
@@ -39,7 +43,7 @@ export function SimpleInput({
       {error ? <p className="errorMessage">{errorMessage}</p> : ""}
       <p className="placeholder">{placeholder}</p>
     </div>
-  );
+  )
 }
 export function FormatSimpleInput({
   title = "input",
@@ -50,7 +54,7 @@ export function FormatSimpleInput({
   message,
   ...rest
 }) {
-  const [editable, setEditable] = useState(0);
+  const [editable, setEditable] = useState(0)
   return (
     <div className="simpleInput format">
       <label>
@@ -68,46 +72,46 @@ export function FormatSimpleInput({
         }}
         {...rest}
         onFocus={() => {
-          setEditable(1);
+          setEditable(1)
         }}
-        onBlur={(ev) => {
-          optionalFn(onBlur)(ev);
-          setEditable(0);
+        onBlur={ev => {
+          optionalFn(onBlur)(ev)
+          setEditable(0)
         }}
       />
       {!editable && (
         <div
           onClick={() => {
-            setEditable(1);
+            setEditable(1)
           }}
         >
           {format}
         </div>
       )}
     </div>
-  );
+  )
 }
 export function HelpInput({ message }) {
-  const [show, toggle] = useState(0);
+  const [show, toggle] = useState(0)
   if (!message) {
-    return "";
+    return ""
   }
   return (
     <span className="helpingMessage">
       <span
         className="question"
-        onMouseEnter={(ev) => {
-          toggle(1);
+        onMouseEnter={ev => {
+          toggle(1)
         }}
         onMouseLeave={() => {
-          toggle(0);
+          toggle(0)
         }}
       >
         <FontIcon icon="question-circle" />
       </span>
       {show ? <span className="helper">{message}</span> : ""}
     </span>
-  );
+  )
 }
 export function autoCompleteInput({ ...rest }) {
   return (
@@ -118,5 +122,5 @@ export function autoCompleteInput({ ...rest }) {
         <li>3</li>
       </ul>
     </SimpleInput>
-  );
+  )
 }

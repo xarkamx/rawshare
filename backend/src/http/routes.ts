@@ -4,11 +4,13 @@ import { APIControllerInterface } from "../controller/interfaces/APIControllerIn
 import { UsersController } from "./../controller/users/UsersController";
 import { isArray } from "util";
 import { validateToken } from "./middlewares/MiddlewareCollection";
+var cors = require("cors");
 
 export class Routes {
   app = express();
   constructor() {
     this.app.use(express.json());
+    this.app.use(cors());
     this.app.get("/", (req: any, res: any) => {
       res.send("hola");
     });
@@ -16,7 +18,7 @@ export class Routes {
       res.send(await new UsersController().auth(req));
     });
     this.API("/demo", new DemoApiController());
-    this.API("/users", new UsersController(), validateToken);
+    this.API("/users", new UsersController());
     this.runServer();
   }
   private runServer() {
@@ -53,6 +55,9 @@ export class Routes {
     { req, res }: { req: any; res: any }
   ) {
     let proceed = true;
+    if (!middleWare) {
+      return proceed;
+    }
     if (isArray(middleWare)) {
       for (let method of middleWare) {
         let proceed = await method(req, res);
