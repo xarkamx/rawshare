@@ -19,9 +19,10 @@ export class UsersController implements APIControllerInterface {
   async store(req: any, res: any): Promise<any> {
     let model = new UserModel();
     let body = req.body;
+    console.log(req.query, req.body);
     body.password = await encrypt(body.password);
     model.setValues(body).save();
-    return model.get();
+    return model.latest();
   }
   update(req: any, res: any): Promise<any> {
     throw new Error("Method not implemented.");

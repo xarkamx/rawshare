@@ -1,7 +1,7 @@
-import { Ajax } from "./../../Core/ajax";
-import { Helpers } from "../../Core/helpers";
+import { Ajax } from "./../../Core/ajax"
+import { Helpers } from "../../Core/helpers"
 export class AFIO extends Ajax {
-  path = "";
+  path = ""
 
   /**
    * @description define el path que sera utilizado por AuthFetch
@@ -9,16 +9,16 @@ export class AFIO extends Ajax {
    */
 
   constructor(path) {
-    super();
-    this.headers = { "Content-Type": "application/x-www-form-urlencoded" };
-    this.path = path;
+    super()
+    this.headers = { "Content-Type": "application/json" }
+    this.path = path
   }
   /**
    * añade o substituye headers
    * @param {*} headers
    */
   setHeaders(headers) {
-    this.headers = { ...this.headers, ...headers };
+    this.headers = { ...this.headers, ...headers }
   }
   /**
    * @description obtiene datos de manera asyncrona
@@ -26,10 +26,10 @@ export class AFIO extends Ajax {
    * @return Promise
    */
   async get(parameters = {}) {
-    const data = await this._fetch(parameters, "get");
+    const data = await this._fetch(parameters, "get")
     //const path = this._setPath(parameters);
     //localStorage.setItem(path, btoa(JSON.stringify(data)));
-    return data;
+    return data
   }
   /**
    * @description envia por medio del metodo post los datos asignados en parameters
@@ -37,7 +37,7 @@ export class AFIO extends Ajax {
    * @returns Promise
    */
   async post(parameters = {}) {
-    return this._fetch(parameters, "post");
+    return this._fetch(parameters, "post")
   }
   /**
    * @description envia por medio del metodo put los datos asignados en parameters
@@ -45,7 +45,7 @@ export class AFIO extends Ajax {
    * @returns Promise
    */
   async put(parameters = {}) {
-    return this._fetch(parameters, "put");
+    return this._fetch(parameters, "put")
   }
   /**
    * @description envia por medio del metodo delete los datos asignados en parameters
@@ -53,7 +53,7 @@ export class AFIO extends Ajax {
    * @returns Promise
    */
   async delete(parameters = {}) {
-    return this._fetch(parameters, "delete");
+    return this._fetch(parameters, "delete")
   }
   /**
    * @description Obtiene informacion guardada en cache basada en el path asignado al crear el objeto.
@@ -62,9 +62,9 @@ export class AFIO extends Ajax {
    */
 
   _setPath(parameters) {
-    const helpers = new Helpers();
-    const path = this.path + "?" + helpers.objectToSerialize(parameters);
-    return btoa(path);
+    const helpers = new Helpers()
+    const path = this.path + "?" + helpers.objectToSerialize(parameters)
+    return btoa(path)
   }
   async _fetch(parameters, method) {
     const response = await new Ajax().fetchData(
@@ -72,8 +72,8 @@ export class AFIO extends Ajax {
       parameters,
       method,
       this.headers
-    );
+    )
     //this.hasError(response);
-    return response;
+    return response
   }
 }

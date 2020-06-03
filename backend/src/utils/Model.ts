@@ -90,6 +90,14 @@ export class Model {
     }
     return this.runQuery(`delete  from ${this.tableName} ${where}`);
   }
+  latest(): Promise<any> {
+    if (this.selectedColumns == "*") {
+      this.select(this.columns);
+    }
+    return this.runQuery(
+      `select ${this.selectedColumns} from ${this.tableName} order by id desc limit 1 `
+    );
+  }
 
   /**
    * Formatea las querys de busqueda.

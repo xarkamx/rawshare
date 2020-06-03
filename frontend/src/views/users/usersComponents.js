@@ -5,16 +5,35 @@ import { AuthFetch } from "../../utils/AsyncFetch/AuthFetch"
 import { useCState } from "./../../utils/hooks/simpleHooks"
 import { optionalFn } from "../../Core/helpers"
 export function SignForm() {
+  const [state, setState] = useCState({ username: "", email: "", password: "" })
   return (
-    <>
-      <UserNameInput />
-      <UserMailInput />
-      <PasswordInputs />
+    <form
+      onSubmit={ev => {
+        ev.preventDefault()
+        let fetch = new AuthFetch("/users")
+        fetch.post(state)
+      }}
+    >
+      <UserNameInput
+        onBlur={({ value }) => {
+          setState({ username: value })
+        }}
+      />
+      <UserMailInput
+        onBlur={({ value }) => {
+          setState({ email: value })
+        }}
+      />
+      <PasswordInputs
+        onValidate={(p1, p2) => {
+          setState({ password: p1 })
+        }}
+      />
       <button>Registrate</button>
-    </>
+    </form>
   )
 }
-export function UserNameInput({ onExistingUser }) {
+export function UserNameInput({ onBlur, onExistingUser }) {
   let [state, setState] = useCState({
     error: 0,
     errorMessage: "",
@@ -22,6 +41,7 @@ export function UserNameInput({ onExistingUser }) {
   let { error, errorMessage } = state
   return (
     <SimpleInput
+      required
       title="User Name"
       errorStatus={error}
       errorMessage={errorMessage}
@@ -35,6 +55,7 @@ export function UserNameInput({ onExistingUser }) {
           })
           optionalFn(onExistingUser)(data)
         } else {
+          optionalFn(onBlur)(target)
           setState({
             error: 0,
             errorMessage: "Parece que ese usuario ya esta registrado",
@@ -44,7 +65,7 @@ export function UserNameInput({ onExistingUser }) {
     />
   )
 }
-export function UserMailInput({ onExistingUser }) {
+export function UserMailInput({ onBlur, onExistingUser }) {
   let [state, setState] = useCState({
     error: 0,
     errorMessage: "",
@@ -52,6 +73,7 @@ export function UserMailInput({ onExistingUser }) {
   let { error, errorMessage } = state
   return (
     <SimpleInput
+      required
       title="e-mail"
       type="mail"
       errorStatus={error}
@@ -66,6 +88,7 @@ export function UserMailInput({ onExistingUser }) {
           })
           optionalFn(onExistingUser)(data)
         } else {
+          optionalFn(onBlur)(target)
           setState({
             error: 0,
             errorMessage: "Parece que ese usuario ya esta registrado",
