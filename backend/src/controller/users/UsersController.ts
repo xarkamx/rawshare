@@ -34,18 +34,20 @@ export class UsersController implements APIControllerInterface {
     let body = req.body;
     let userData = new UserModel();
     let content = await userData
+      .select(["username", "password"])
       .where({ username: body.username })
       .orWhere({ email: body.email })
       .get();
     let { username, password } = content[0];
-    let token = jwt.sign(
-      { check: compare(body.password, password) },
-      username,
-      {
-        expiresIn: 1440,
-      }
-    );
+    let valid = await compare(body.password, password);
+    if (!valid) {
+      return { error: "Passwords dont match" };
+    }
+    let expiresIn = 1440;
+    let token = jwt.sign({ check: content[0] }, username, {
+      expiresIn,
+    });
     userData.setValues({ jwtToken: token }).save();
-    return content;
+    return { username, token, expiresIn };
   }
 }

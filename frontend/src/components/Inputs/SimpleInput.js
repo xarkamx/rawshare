@@ -18,8 +18,9 @@ export function SimpleInput({
   useEffect(() => {
     setError(errorStatus)
   }, [errorStatus])
+  let err = error || errorStatus
   return (
-    <div className={`simpleInput ${error ? "error" : ""}`}>
+    <div className={`simpleInput ${err ? "error" : ""}`}>
       <label>
         {`${title} ${required ? "*" : ""}`}
         <HelpInput message={message} />
@@ -40,7 +41,7 @@ export function SimpleInput({
         {...rest}
       />
       {children}
-      {error ? <p className="errorMessage">{errorMessage}</p> : ""}
+      {err ? <p className="errorMessage">{errorMessage}</p> : ""}
       <p className="placeholder">{placeholder}</p>
     </div>
   )
@@ -111,16 +112,5 @@ export function HelpInput({ message }) {
       </span>
       {show ? <span className="helper">{message}</span> : ""}
     </span>
-  )
-}
-export function autoCompleteInput({ ...rest }) {
-  return (
-    <SimpleInput {...rest}>
-      <ul className="autoComplete">
-        <li>1</li>
-        <li>2</li>
-        <li>3</li>
-      </ul>
-    </SimpleInput>
   )
 }

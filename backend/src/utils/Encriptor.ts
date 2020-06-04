@@ -11,6 +11,5 @@ export function encrypt(plainTextPassword: string) {
   });
 }
 export function compare(password: string, hash: string) {
-  console.log(password, hash);
   return bcrypt.compare(password, hash);
 }

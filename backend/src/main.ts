@@ -7,5 +7,4 @@ var cr2Raw = require("cr2-raw");
 //fs.writeFileSync("image/jpg//my-image.jpg", raw.previewImage());
 //let bunny = new BunnyCDN();
 //bunny.uploader("image/test.cr2");
-
 new Routes();
