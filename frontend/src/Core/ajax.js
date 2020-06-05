@@ -13,9 +13,10 @@ export class Ajax extends Helpers {
     method = "get",
     headers = {
       "Content-Type": "application/x-www-form-urlencoded",
-    }
+    },
+    stringify = true
   ) {
-    const data = await this._fetch(path, parameters, method, headers)
+    const data = await this._fetch(path, parameters, method, headers, stringify)
     let result = await data.text()
     try {
       return JSON.parse(result)
@@ -41,7 +42,7 @@ export class Ajax extends Helpers {
     const data = await this._fetch(path, {}, "get", headers)
     return await data.text()
   }
-  async _fetch(path, parameters, method, headers) {
+  async _fetch(path, parameters, method, headers, stringify) {
     let args = {
       headers,
     }
@@ -51,7 +52,7 @@ export class Ajax extends Helpers {
       path += "?" + parameters
       parameters = ""
     } else {
-      args.body = JSON.stringify(parameters)
+      args.body = stringify ? JSON.stringify(parameters) : parameters
     }
     args.method = method
     return await fetch(path, args)

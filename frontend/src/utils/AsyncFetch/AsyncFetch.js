@@ -2,7 +2,7 @@ import { Ajax } from "./../../Core/ajax"
 import { Helpers } from "../../Core/helpers"
 export class AFIO extends Ajax {
   path = ""
-
+  stringify = true
   /**
    * @description define el path que sera utilizado por AuthFetch
    * @param string path direccion a donde apunta el fetch. ex: 'api/ejemplo'.
@@ -12,6 +12,9 @@ export class AFIO extends Ajax {
     super()
     this.headers = { "Content-Type": "application/json" }
     this.path = path
+  }
+  toggleStringify() {
+    this.stringify = false
   }
   /**
    * añade o substituye headers
@@ -67,11 +70,14 @@ export class AFIO extends Ajax {
     return btoa(path)
   }
   async _fetch(parameters, method) {
+    console.log(this.stringify)
+
     const response = await new Ajax().fetchData(
       this.path,
       parameters,
       method,
-      this.headers
+      this.headers,
+      this.stringify
     )
     //this.hasError(response);
     return response

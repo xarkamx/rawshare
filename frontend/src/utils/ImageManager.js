@@ -7,8 +7,12 @@ export class ImageManager {
   upload() {
     let files = this.files
     let fetch = new AuthFetch("/photos")
+    delete fetch.headers["Content-Type"]
+    fetch.toggleStringify()
     for (let item of files) {
-      fetch.post(item)
+      let data = new FormData()
+      data.append("photo", item)
+      fetch.post(data)
     }
   }
 }

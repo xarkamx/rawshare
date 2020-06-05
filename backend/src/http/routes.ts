@@ -3,14 +3,20 @@ import { DemoApiController } from "./../controller/DemoApiController";
 import { APIControllerInterface } from "../controller/interfaces/APIControllerInterface";
 import { UsersController } from "./../controller/users/UsersController";
 import { isArray } from "util";
-import { validateToken } from "./middlewares/MiddlewareCollection";
+import { PhotosController } from "./../controller/PhotosController";
 var cors = require("cors");
+var multer = require("multer");
 
 export class Routes {
   app = express();
   constructor() {
     this.app.use(express.json());
     this.app.use(cors());
+    this.app.use(
+      multer({
+        dest: "./uploads/",
+      }).single("photo")
+    );
     this.app.get("/", (req: any, res: any) => {
       res.send("hola");
     });
@@ -18,7 +24,9 @@ export class Routes {
       res.send(await new UsersController().auth(req));
     });
     this.API("/demo", new DemoApiController());
+    this.API("/photos", new PhotosController());
     this.API("/users", new UsersController());
+
     this.runServer();
   }
   private runServer() {
