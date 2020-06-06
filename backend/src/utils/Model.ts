@@ -110,11 +110,10 @@ export class Model {
     }
     let query = "where " + Object.values(this.whereQuery[0])[0];
 
-    querys.splice(0, 1);
+    querys = querys.slice(1);
     for (let item of querys) {
       let type = Object.keys(item)[0];
       let values = Object.values(item)[0];
-      console.log(values);
       query += ` ${type} ${values}`;
     }
     return query;

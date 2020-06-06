@@ -4,31 +4,48 @@ import { APIControllerInterface } from "../controller/interfaces/APIControllerIn
 import { UsersController } from "./../controller/users/UsersController";
 import { isArray } from "util";
 import { PhotosController } from "./../controller/PhotosController";
+import { validateToken } from "./middlewares/MiddlewareCollection";
+import * as keys from "../assets/storage/keys.json";
 var cors = require("cors");
-var multer = require("multer");
 
 export class Routes {
   app = express();
   constructor() {
     this.app.use(express.json());
     this.app.use(cors());
-    this.app.use(
-      multer({
-        dest: "./uploads/",
-      }).single("photo")
-    );
+    this.home();
+    this.auth();
+    this.keys();
+    this.API("/demo", new DemoApiController());
+    this.API("/photos", new PhotosController(), validateToken);
+    this.API("/users", new UsersController());
+    this.runServer();
+  }
+  private home() {
     this.app.get("/", (req: any, res: any) => {
       res.send("hola");
     });
+  }
+
+  private auth() {
     this.app.post("/api/auth", async (req: any, res: any) => {
       res.send(await new UsersController().auth(req));
     });
-    this.API("/demo", new DemoApiController());
-    this.API("/photos", new PhotosController());
-    this.API("/users", new UsersController());
-
-    this.runServer();
   }
+
+  private keys() {
+    this.app.get("/api/keys", async (req: any, res: any) => {
+      this._sender({
+        req,
+        res,
+        middleWare: validateToken,
+        callback: (req: any, res: any) => {
+          return keys;
+        },
+      });
+    });
+  }
+
   private runServer() {
     this.app.listen(3000, function () {
       console.log("Example app listening on port 3000!");

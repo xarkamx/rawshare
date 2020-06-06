@@ -19,4 +19,11 @@ export class BunnyCDN {
       console.log(item);
     });
   }
+  get(folderName: string) {
+    let fetch = new AFIO(`${this.hostName}/${this.path}/${folderName}/`);
+    fetch.setHeaders(this.headers);
+    fetch.get().then((item) => {
+      console.log(item);
+    });
+  }
 }

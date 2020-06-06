@@ -7,20 +7,19 @@ export async function validateToken(req: any, res: any) {
   if (token) {
     let data = await new UserModel().where({ jwtToken: token }).get();
     if (data.length == 0) {
-      res.json({ mensaje: "Token inválida" });
+      res.json({ error: "Token Inexistente" });
       return false;
     }
     let { username } = data[0];
-    console.log(username, token);
     jwt.verify(token, username, (err: any, decoded: any) => {
       if (err) {
-        res.json({ mensaje: "Token inválida" });
+        res.json({ error: "Token inválida" });
         return false;
       }
     });
   } else {
     res.send({
-      mensaje: "Token no proveída.",
+      error: "Token no proveída.",
     });
     return false;
   }

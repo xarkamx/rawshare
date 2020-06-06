@@ -8,10 +8,19 @@
       "nullable": false,
       "index": "Primary key"
     },
-    "path": {
-      "type": "text",
+    "userID": {
+      "type": "int",
       "autoincrement": false,
-      "defaultValue": "Demo",
+      "collation": "utf-8",
+      "nullable": true
+    },
+    "originalFile": {
+      "type": "text",
+      "collation": "utf-8",
+      "nullable": true
+    },
+    "jpg": {
+      "type": "text",
       "collation": "utf-8",
       "nullable": true
     }
