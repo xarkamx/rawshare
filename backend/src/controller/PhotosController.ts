@@ -31,4 +31,11 @@ export class PhotosController implements APIControllerInterface {
   delete(req: any, res: any): object {
     throw new Error("Method not implemented.");
   }
+  getJpgs(req: any, res: any) {
+    let model = new PhotosModel()
+      .select(["id", "userID", "jpg"])
+      .where({ jpg: { val: "", operator: "<>" } })
+      .orderBy();
+    return model.get();
+  }
 }

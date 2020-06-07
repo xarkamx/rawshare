@@ -16,6 +16,9 @@ export class Routes {
     this.home();
     this.auth();
     this.keys();
+    this.app.get("/api/gallery", async (req: any, res: any) => {
+      res.send(await new PhotosController().getJpgs(req, res));
+    });
     this.API("/demo", new DemoApiController());
     this.API("/photos", new PhotosController(), validateToken);
     this.API("/users", new UsersController());

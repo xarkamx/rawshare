@@ -19,6 +19,7 @@ export class Model {
   whereQuery: Array<object> = [];
   values: any = {};
   selectedColumns: string = "*";
+  order: string = "";
 
   /**
    * Setea las columnas a obtener
@@ -74,7 +75,7 @@ export class Model {
     }
     let where = this.__formatWhereQuery();
     return this.runQuery(
-      `select ${this.selectedColumns} from ${this.tableName} ${where}`
+      `select ${this.selectedColumns} from ${this.tableName} ${where} ${this.order}`
     );
   }
 
@@ -152,6 +153,15 @@ export class Model {
         break;
     }
     this.runQuery(query);
+    return this;
+  }
+  /**
+   * Ordenar por columna y direccion
+   * @param column
+   * @param direction
+   */
+  orderBy(column: string = "id", direction: string = "desc") {
+    this.order = `order by ${column} ${direction}`;
     return this;
   }
   private _setInsertQuery(): string {

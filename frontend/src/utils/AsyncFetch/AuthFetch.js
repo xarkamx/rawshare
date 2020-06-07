@@ -5,7 +5,8 @@ export class AuthFetch extends AFIO {
     super(path)
     this.__setUrl(path)
     let loginManager = new LoginManager()
-    this.setHeaders({ "access-token": loginManager.getToken().token })
+    let userData = loginManager.getToken()
+    if (userData) this.setHeaders({ "access-token": userData.token })
   }
   __setUrl(path) {
     let https = "http://"

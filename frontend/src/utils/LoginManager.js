@@ -8,7 +8,6 @@ export class LoginManager {
   login(result) {
     this.hasError(result)
     result.expired = this.setExpirationDate(result.expiresIn)
-    console.log(result.expired)
     localStorage.setItem(btoa("token"), btoa(JSON.stringify(result)))
     return this
   }
@@ -35,7 +34,7 @@ export class LoginManager {
    */
   setExpirationDate(expiredIn) {
     let now = new Date()
-    const inSeconds = expiredIn * 60
+    const inSeconds = expiredIn
     now.setSeconds(now.getSeconds() + inSeconds)
     return now
   }

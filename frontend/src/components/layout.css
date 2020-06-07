@@ -7,6 +7,15 @@ body {
   margin: 0;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  background: #fafafa;
+  overflow: hidden;
+}
+.loginLinks {
+  text-align: center;
+  align-self: center;
+}
+.loginLinks a {
+  color: #555;
 }
 article,
 aside,

@@ -1,32 +1,41 @@
 import { Link } from "gatsby"
 import PropTypes from "prop-types"
 import React from "react"
+import { GridContainer, GridItem } from "./Grid/Grid"
+import { SignContainer, UserIcon } from "../views/users/Login"
 
 const Header = ({ siteTitle }) => (
   <header
     style={{
-      background: `rebeccapurple`,
-      marginBottom: `1.45rem`,
+      background: `#efefef`,
     }}
   >
     <div
       style={{
         margin: `0 auto`,
-        maxWidth: 960,
-        padding: `1.45rem 1.0875rem`,
+        padding: `10px`,
       }}
     >
-      <h1 style={{ margin: 0 }}>
-        <Link
-          to="/"
-          style={{
-            color: `white`,
-            textDecoration: `none`,
-          }}
-        >
-          {siteTitle}
-        </Link>
-      </h1>
+      <GridContainer>
+        <GridItem xs={4}>
+          <h1 style={{ margin: 0, textAlign: "center" }}>
+            <Link
+              to="/"
+              style={{
+                color: `#555`,
+                textDecoration: `none`,
+              }}
+            >
+              {siteTitle}
+            </Link>
+          </h1>
+        </GridItem>
+        <GridItem xs={4}></GridItem>
+
+        <GridItem xs={4} className={"loginLinks"}>
+          <UserIcon />
+        </GridItem>
+      </GridContainer>
     </div>
   </header>
 )

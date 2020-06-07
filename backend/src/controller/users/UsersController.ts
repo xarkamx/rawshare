@@ -43,7 +43,7 @@ export class UsersController implements APIControllerInterface {
     if (!valid) {
       return { error: "Passwords dont match" };
     }
-    let expiresIn = 1440;
+    let expiresIn = 1440 * 60;
     let token = jwt.sign({ check: content[0] }, username, {
       expiresIn,
     });
