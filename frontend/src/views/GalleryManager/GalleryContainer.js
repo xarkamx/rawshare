@@ -4,6 +4,7 @@ import Masonry from "react-masonry-component"
 import { AuthFetch } from "../../utils/AsyncFetch/AuthFetch"
 import "./scss/gallery.scss"
 import { Button } from "@material-ui/core"
+import { Dropzone } from "./../../components/container/DropZone"
 export function UploaderGalleryButton() {
   const inputRef = useRef(null)
   return (
@@ -21,7 +22,7 @@ export function UploaderGalleryButton() {
           background: "blue",
         }}
         onClick={() => {
-          inputRef.current.click()
+          window.location.replace("/Uploader")
         }}
       >
         Subir
