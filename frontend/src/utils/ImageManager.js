@@ -1,30 +1,34 @@
 import { AuthFetch } from "./AsyncFetch/AuthFetch"
 import { AFIO } from "./AsyncFetch/AsyncFetch"
 import { LoginManager } from "./LoginManager"
+import { optionalFn } from "../Core/helpers"
 var userData = new LoginManager().getToken()
 export class ImageManager {
   files = []
   constructor(files) {
     this.files = files
   }
-  async upload(onStateChange = null) {
+  async upload(onCompletion = null) {
     let { hostname, path, password } = await getBunnyKeys()
     let bunny = new BunnyCDN(hostname, path, password)
     let files = this.files
     let fetch = new AuthFetch("/photos")
     delete fetch.headers["Content-Type"]
     fetch.toggleStringify()
-    let index = 0
-    for (let item of files) {
+    let promises = files.map((item, index) => {
       let filename = this.getFileName(index, item)
-      bunny.uploader(item, filename).then(this.uploadPaths)
-      index++
-    }
+
+      return bunny.uploader(item, filename).then(async item => {
+        await this.uploadPaths(item)
+        optionalFn(onCompletion)(filename, index)
+      })
+    })
+    return Promise.all(promises)
   }
 
   uploadPaths(item) {
     let fetch = new AuthFetch("/photos")
-    fetch.post(item)
+    return fetch.post(item)
   }
 
   getFileName(index, item) {

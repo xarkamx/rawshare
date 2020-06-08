@@ -3,42 +3,50 @@ import { ImageManager } from "./../../utils/ImageManager"
 import Masonry from "react-masonry-component"
 import { AuthFetch } from "../../utils/AsyncFetch/AuthFetch"
 import "./scss/gallery.scss"
-import { Button } from "@material-ui/core"
 import { Dropzone } from "./../../components/container/DropZone"
+import { GridContainer, GridItem } from "./../../components/Grid/Grid"
+import { useCState } from "./../../utils/hooks/simpleHooks"
+import { FontIcon } from "./../../components/Icons/FontIcon"
+import { SKGrid } from "./../../components/Icons/Spinkit"
 export function UploaderGalleryButton() {
-  const inputRef = useRef(null)
+  const [state, setState] = useCState({
+    files: [],
+    completed: [],
+    uploading: false,
+  })
+  console.log("completed", state.completed)
   return (
     <>
-      <GalleryView />
-      <Button
-        style={{
-          display: "block",
-          margin: "10px auto",
-          color: "white",
-          fontWeight: "bolder",
-          textShadow: "1px 1px 1px #aaa",
-          boxShadow: "1px 1px 3px #555",
-          width: "15vw",
-          background: "blue",
-        }}
-        onClick={() => {
-          window.location.replace("/Uploader")
+      <Dropzone
+        onFilesAdded={files => {
+          setState({ uploading: true })
+          setState({
+            files: files.map(({ name }) => {
+              return { name, status: "uploading" }
+            }),
+          })
+          let images = new ImageManager(files)
+          images
+            .upload((item, index) => {
+              let completed = state.completed
+              completed.push(index)
+              setState({ completed })
+            })
+            .then(all => {
+              setState({ files: [], completed: [], uploading: false })
+            })
         }}
       >
-        Subir
-      </Button>
-      <input
-        ref={inputRef}
-        hidden
-        id="photoUploader"
-        type="file"
-        multiple
-        name="photo"
-        onChange={({ target }) => {
-          let images = new ImageManager(target.files)
-          images.upload()
-        }}
-      />
+        {state.uploading == true ? (
+          <FilesGrid
+            files={state.files}
+            key={new Date()}
+            completed={state.completed}
+          />
+        ) : (
+          <GalleryView />
+        )}
+      </Dropzone>
     </>
   )
 }
@@ -72,5 +80,35 @@ export function GalleryView() {
         )
       })}
     </Masonry>
+  )
+}
+function FilesGrid({ files, completed }) {
+  return (
+    <GridContainer className="fileGrid">
+      {files.map((file, key) => {
+        return (
+          <GridItem xs={4} key={key} className="fileItem">
+            <div>
+              <div className="icon">
+                {!completed.includes(key) ? (
+                  <SKGrid background="orange" />
+                ) : (
+                  <FontIcon
+                    icon="check"
+                    style={{
+                      color: "white",
+                      borderRadius: "100%",
+                      background: "green",
+                      padding: "10px",
+                    }}
+                  />
+                )}
+              </div>
+              {file.name}
+            </div>
+          </GridItem>
+        )
+      })}
+    </GridContainer>
   )
 }

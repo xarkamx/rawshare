@@ -8,3 +8,15 @@
     margin: 0;
   }
 }
+.fileGrid {
+  .fileItem {
+    text-align: center;
+    box-shadow: 1px 1px 3px;
+    height: 150px;
+    display: flex;
+    div {
+      align-self: center;
+      margin: 0 auto;
+    }
+  }
+}

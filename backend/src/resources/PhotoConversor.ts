@@ -9,14 +9,20 @@ export class PhotoConversor {
   async run() {
     console.log("running uploader");
     let model = new PhotosModel();
-    let photos = await model.where({ jpg: "" }).get();
+    let photos = [];
+    try {
+      photos = await model.where({ jpg: "" }).get();
+    } catch (e) {
+      console.log("err", e);
+      return false;
+    }
     photos.map((item: any) => {
       this.downloader(item);
     });
   }
 
   runInterval(time: number = 1) {
-    time = time * 1000 * 60;
+    time = time * 5000 * 60;
     setInterval(() => {
       this.run();
     }, time);
@@ -37,13 +43,24 @@ export class PhotoConversor {
       },
       (err: any) => {
         if (err) throw err;
-        this.rawConversor(dir, base, name, id);
+        this.rawConversor(dir, base, name, ext, id);
       }
     );
   }
-  private rawConversor(dir: string, base: string, name: string, id: number) {
+  private rawConversor(
+    dir: string,
+    base: string,
+    name: string,
+    ext: string,
+    id: number
+  ) {
     console.log(base, " to jpg");
     const rawPath = `./${dir}/${base}`;
+    if (ext != ".CR2") {
+      console.log(ext, "ups");
+      fs.unlinkSync(rawPath);
+      return false;
+    }
     let raw = cr2Raw(rawPath);
     const path = `image/jpg/${name}.jpg`;
     fs.writeFile(path, raw.previewImage(), async () => {
@@ -66,6 +83,3 @@ export class PhotoConversor {
       .save();
   }
 }
-//let bunny = new BunnyCDN();
-//bunny.uploader("image/test.cr2");
-//bunny.get("image");
