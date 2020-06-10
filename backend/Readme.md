@@ -35,7 +35,7 @@ con el siguiente contenido:
 
 No se te olvide configurar los accesos de tu base de datos en el archivo `.env`
 
-y finalmente en consola corre el comando: `tsc-watch --onSuccess "node build/main.js"`
+y finalmente en consola corre el comando: `yarn start`
 
 Asegurate que la carpeta `build` no tenga otra carpeta `build` dentro.
 

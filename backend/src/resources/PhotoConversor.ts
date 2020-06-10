@@ -4,6 +4,7 @@ import { BunnyCDN } from "../utils/BunnyCDN";
 import * as fs from "fs";
 var cr2Raw = require("cr2-raw");
 var download = require("download-file");
+var compress_images = require("compress-images");
 export class PhotoConversor {
   bunnyUrl: string = "https://rawshare.b-cdn.net/";
   async run() {
@@ -11,7 +12,7 @@ export class PhotoConversor {
     let model = new PhotosModel();
     let photos = [];
     try {
-      photos = await model.where({ jpg: "" }).get();
+      photos = await model.where({ jpg: "" }).limit("10").get();
     } catch (e) {
       console.log("err", e);
       return false;
@@ -22,6 +23,7 @@ export class PhotoConversor {
   }
 
   runInterval(time: number = 1) {
+    this.run();
     time = time * 5000 * 60;
     setInterval(() => {
       this.run();
@@ -64,10 +66,20 @@ export class PhotoConversor {
     let raw = cr2Raw(rawPath);
     const path = `image/jpg/${name}.jpg`;
     fs.writeFile(path, raw.previewImage(), async () => {
-      await this.updatePath(path, id);
-      fs.unlinkSync(rawPath);
-      fs.unlinkSync(path);
+      this.compress(path)
+        .then((data: any) => {
+          const compressedPath = data.statistic.path_out_new;
+          this.updatePath(compressedPath, id);
+          this.clearFiles([rawPath, path, compressedPath]);
+        })
+        .catch(() => {
+          this.clearFiles([rawPath, path]);
+        });
     });
+  }
+
+  private clearFiles(paths: Array<string>) {
+    paths.map((item) => fs.unlinkSync(item));
   }
 
   private async updatePath(path: string, id: number) {
@@ -81,5 +93,31 @@ export class PhotoConversor {
         jpg: path,
       })
       .save();
+  }
+  private async compress(path: string) {
+    console.log("compressing", path);
+    return new Promise((load, fail) => {
+      compress_images(
+        path,
+        "image/jpg/comp",
+        { compress_force: false, statistic: true, autoupdate: true },
+        false,
+        { jpg: { engine: "mozjpeg", command: ["-quality", "40"] } },
+        { png: { engine: "pngquant", command: ["--quality=20-50"] } },
+        { svg: { engine: "svgo", command: "--multipass" } },
+        {
+          gif: {
+            engine: "gifsicle",
+            command: ["--colors", "64", "--use-col=web"],
+          },
+        },
+        function (error: any, completed: any, statistic: any) {
+          if (error) {
+            fail(error);
+          }
+          load({ completed, statistic });
+        }
+      );
+    });
   }
 }

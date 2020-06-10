@@ -1,0 +1,8 @@
+File from: [image/jpg/xarkamx-2-1591641409603-IMG_0038.jpg]
+
+File to: [xarkamx-2-1591641409603-IMG_0038.jpg]
+
+Compression algorithm: [mozjpeg]
+
+Description: Error: Command failed: C:\Users\alber\proyectos\RawShare\backend\node_modules\mozjpeg\vendor\cjpeg.exe -quality 60 -outfile xarkamx-2-1591641409603-IMG_0038.jpg image/jpg/xarkamx-2-1591641409603-IMG_0038.jpg
+C:\Users\alber\proyectos\RawShare\backend\node_modules\mozjpeg\vendor\cjpeg.exe: can't open xarkamx-2-1591641409603-IMG_0038.jpg

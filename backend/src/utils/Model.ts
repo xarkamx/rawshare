@@ -20,6 +20,7 @@ export class Model {
   values: any = {};
   selectedColumns: string = "*";
   order: string = "";
+  limiter: string = "";
 
   /**
    * Setea las columnas a obtener
@@ -75,7 +76,7 @@ export class Model {
     }
     let where = this.__formatWhereQuery();
     return this.runQuery(
-      `select ${this.selectedColumns} from ${this.tableName} ${where} ${this.order}`
+      `select ${this.selectedColumns} from ${this.tableName} ${where} ${this.order} ${this.limiter}`
     );
   }
 
@@ -162,6 +163,10 @@ export class Model {
    */
   orderBy(column: string = "id", direction: string = "desc") {
     this.order = `order by ${column} ${direction}`;
+    return this;
+  }
+  limit(from: string, to = "") {
+    this.limiter = ` limit ${from} ${to}`;
     return this;
   }
   private _setInsertQuery(): string {

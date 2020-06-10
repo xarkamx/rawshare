@@ -114,6 +114,7 @@ export class Dropzone extends Component {
         </Button>
         <input
           hidden
+          accept=".jpg,.cr2"
           ref={this.fileInputRef}
           type="file"
           multiple

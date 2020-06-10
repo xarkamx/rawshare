@@ -65,14 +65,15 @@ export function GalleryView() {
     <Masonry
       className={"mainGallery"} // default ''
       elementType={"ul"} // default 'div'
-      disableImagesLoaded={false} // default false
+      disableImagesLoaded={true} // default false
       updateOnEachImageLoad={false} // default false and works only if disableImagesLoaded is false
     >
       {photos.map((item, key) => {
+        let between = 20
         return (
           <li>
             <img
-              style={{ width: "32.5vw" }}
+              style={{ width: `${between}vw` }}
               key={key}
               src={`https://rawshare.b-cdn.net/${item.jpg}`}
             />
