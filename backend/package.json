@@ -26,7 +26,7 @@
     "jsonwebtoken": "^8.5.1",
     "mocha": "^7.2.0",
     "mysql": "^2.18.1",
-    "node-fetch": "^2.6.0",
+    "node-fetch": "^2.6.1",
     "pngquant-bin": "^6.0.0"
   },
   "devDependencies": {
